@@ -4,14 +4,13 @@ import { useState, useRef } from 'react';
 import { validate } from '../utils/validate';
 import { auth } from "../utils/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addUser } from '../utils/userSlice';
+import { BG_URL, USER_AVATAR } from '../utils/constants';
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const email = useRef(null);
   const password = useRef(null);
@@ -32,7 +31,7 @@ const Login = () => {
         .then((userCredential) => {
           const user = userCredential.user;
           updateProfile(user, {
-            displayName: "name.current.value" , photoURL : "https://as2.ftcdn.net/v2/jpg/05/65/79/61/1000_F_565796170_C4fuivt1qGdDtTGKVpQzcYx7p8PzXEGI.jpg"
+            displayName: "name.current.value" , photoURL : USER_AVATAR
           }).then(() => {
             const {uid,email,displayname,photoURL} = auth.currentUser;
             dispatch(
@@ -40,8 +39,8 @@ const Login = () => {
                 uid:uid,
                 email:email,
                 displayname:displayname,
-                photoURL:photoURL}));
-            navigate("/browse");
+                photoURL:photoURL
+              }));
             // Profile updated!
             // ...
           }).catch((error) => {
@@ -49,7 +48,7 @@ const Login = () => {
             // An error occurred
             // ...
           });
-          console.log(user);
+          
           
         })
         .catch((error) => {
@@ -62,8 +61,6 @@ const Login = () => {
       signInWithEmailAndPassword(auth, email.current.value, password.current.value)
         .then((userCredential) => {
           const user = userCredential.user;
-          console.log(user);
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -97,7 +94,7 @@ const Login = () => {
     <div>
       <Header />
       <div className='absolute'>
-        <img src="https://assets.nflxext.com/ffe/siteui/vlv3/51c1d7f7-3179-4a55-93d9-704722898999/be90e543-c951-40d0-9ef5-e067f3e33d16/IN-en-20240610-popsignuptwoweeks-perspective_alpha_website_large.jpg" alt="page" />
+        <img src={BG_URL} alt="page" />
       </div>
       <form onSubmit={(e) => e.preventDefault()} className='p-12 absolute w-3/12 mx-auto left-0 right-0 my-36 text-white bg-black bg-opacity-80 rounded-lg'>
         <h3 className='p-4 my-3 font-bold text-3xl rounded-lg'>{isSignInForm ? "Sign In" : "Sign Up"}</h3>
